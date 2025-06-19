@@ -11,7 +11,7 @@ import SwiftUI
 struct DiscountModuleApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            CartView()
         }
     }
 }

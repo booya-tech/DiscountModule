@@ -1,0 +1,20 @@
+[
+  {
+    "type": "fixedAmount",
+    "value": 100
+  },
+  {
+    "type": "categoryPercentage",
+    "category": "clothing",
+    "value": 15
+  },
+  {
+    "type": "points",
+    "value": 120
+  },
+  {
+    "type": "seasonal",
+    "threshold": 300,
+    "discount": 50
+  }
+]

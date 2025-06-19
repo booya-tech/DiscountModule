@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CardItem: Identifiable, Codable {
+struct CartItem: Identifiable, Codable {
     var id = UUID()
     let name: String
     let category: Category

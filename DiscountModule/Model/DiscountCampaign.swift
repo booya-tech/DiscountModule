@@ -14,7 +14,7 @@ enum DiscountCampaign: Codable, Identifiable {
     case percentage(Double)
     case categoryPercentage(category: Category, percent: Double)
     case points(Int)
-    case seasonal(threshold: Double, discount: Double)
+    case seasonal(_ threshold: Double, _ discount: Double)
     
     private enum CodingKeys: String, CodingKey {
         case type, value, category, threshold, discount
@@ -43,7 +43,7 @@ enum DiscountCampaign: Codable, Identifiable {
         case .seasonal:
             let threshold = try container.decode(Double.self, forKey: .threshold)
             let discount = try container.decode(Double.self, forKey: .discount)
-            self = .seasonal(threshold: threshold, discount: discount)
+            self = .seasonal(threshold, discount)
         }
     }
     
