@@ -40,9 +40,13 @@ Two JSON files are included in the bundle:
 
 ## 📸 Screenshots
 
-![CartView Screenshot](Screenshots/cart-view.png)
-![CartView Screenshot](Screenshots/discount-selector.png)
-![CartView Screenshot](Screenshots/add-item.png)
+<p align="center">
+  <img src="Screenshots/cart-view.png" width="300" alt="Cart View" />
+  <br/>
+  <img src="Screenshots/discount-selector.png" width="300" alt="Discount Selector" />
+  <br/>
+  <img src="Screenshots/add-item.png" width="300" alt="Add Item" />
+</p>
 
 ## ✅ Requirements Met
 
