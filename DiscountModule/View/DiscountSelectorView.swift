@@ -17,6 +17,8 @@ struct DiscountSelectorView: View {
     @State private var selectedSeasonalIndex: Int? = nil
     @State private var loadedDiscounts: [DiscountCampaign] = []
     
+    var selectedItem: CartItem?
+    
     var couponOptions: [DiscountCampaign] {
         loadedDiscounts.filter {
             if case .fixedAmount = $0 { return true }
@@ -57,6 +59,16 @@ struct DiscountSelectorView: View {
     
     var body: some View {
         Form {
+            if let item = selectedItem {
+                Section(header: Text("Item Info")) {
+                    VStack(alignment: .leading) {
+                        Text("Name: \(item.name)")
+                        Text("Category: \(item.category.rawValue.capitalized)")
+                        Text("Price: ฿\(item.price, specifier: "%.2f")")
+                    }
+                }
+            }
+            
             Section(header: Text("Coupon")) {
                 ForEach(couponOptions.indices, id: \.self) { index in
                     HStack {
@@ -110,7 +122,21 @@ struct DiscountSelectorView: View {
                         return
                     }
                     
-                    cartViewModel.setDiscounts(selected)
+//                    cartViewModel.setDiscounts(selected)
+                    if let item = selectedItem {
+                        // Filter out only the category-specific discounts for this item's category
+                        let filtered = selected.map { discount -> DiscountCampaign in
+                            switch discount {
+                            case .categoryPercentage(_, let percent):
+                                return .categoryPercentage(category: item.category, percent: percent)
+                            default:
+                                return discount
+                            }
+                        }
+                        cartViewModel.setDiscounts(filtered)
+                    } else {
+                        cartViewModel.setDiscounts(selected)
+                    }
                     showDiscountAppliedAlert = true
                 }
             }
@@ -147,7 +173,11 @@ struct DiscountSelectorView: View {
     private func onTopLabel(for campaign: DiscountCampaign) -> String {
         switch campaign {
         case .categoryPercentage(let category, let percent):
-            return "\(Int(percent))% Off \(category)"
+            if let item = selectedItem {
+                return "\(Int(percent))% Off \(item.category.rawValue.capitalized)"
+            } else {
+                return "\(Int(percent))% Off \(category)"
+            }
         case .points(let points):
             return "Use \(points) Points"
         default: return "Unknown"
@@ -174,7 +204,8 @@ struct DiscountSelectorView: View {
         VStack {
             DiscountSelectorView(
                 cartViewModel: mockViewModel,
-                showDiscountAppliedAlert: .constant(false)
+                showDiscountAppliedAlert: .constant(false),
+                selectedItem: mockViewModel.itemList.first
             )
         }
     }

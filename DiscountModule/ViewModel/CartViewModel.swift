@@ -27,17 +27,23 @@ class CartViewModel: ObservableObject {
         calculateFinalPrice()
     }
     
+    func removeItem(at offsets: IndexSet) {
+        itemList.remove(atOffsets: offsets)
+        calculateFinalPrice()
+    }
+    
     func setDiscounts(_ discounts: [DiscountCampaign]) {
         selectedDiscounts = discounts
         calculateFinalPrice()
     }
     
-    func loadCartFromJSON() {
-        if let loaded: [CartItem] = JSONLoader.load("cart", as: [CartItem].self) {
-            self.itemList = loaded
-            calculateFinalPrice()
-        }
-    }
+    // not apply in code
+    //    func loadCartFromJSON() {
+    //        if let loaded: [CartItem] = JSONLoader.load("cart", as: [CartItem].self) {
+    //            self.itemList = loaded
+    //            calculateFinalPrice()
+    //        }
+    //    }
     
     func loadDiscountFromJSON() {
         if let loaded: [DiscountCampaign] = JSONLoader.load("discounts", as: [DiscountCampaign].self) {

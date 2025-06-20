@@ -10,6 +10,7 @@ import SwiftUI
 struct CartView: View {
     @StateObject private var cartViewModel = CartViewModel()
     @State private var showDiscountAppliedAlert: Bool = false
+    @State private var showAddItemSet: Bool = false
     @State private var newItemName: String = ""
     @State private var newItemCategory: Category = .clothing
     @State private var newItemPrice: String = ""
@@ -17,19 +18,30 @@ struct CartView: View {
     var body: some View {
         NavigationView {
             VStack {
-                List(cartViewModel.itemList) { item in
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text(item.name)
-                                .font(.headline)
-                            Text(item.category.rawValue.capitalized)
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
+                List {
+                    ForEach(cartViewModel.itemList) { item in
+                        NavigationLink(
+                            destination: DiscountSelectorView(
+                                cartViewModel: cartViewModel,
+                                showDiscountAppliedAlert: $showDiscountAppliedAlert,
+                                selectedItem: item
+                            )
+                        ) {
+                            HStack {
+                                VStack(alignment: .leading) {
+                                    Text(item.name)
+                                        .font(.headline)
+                                    Text(item.category.rawValue.capitalized)
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Text("฿\(item.price, specifier: "%.2f")")
+                                    .bold()
+                            }
                         }
-                        Spacer()
-                        Text("฿\(item.price, specifier: "%.2f")")
-                            .bold()
                     }
+                    .onDelete(perform: cartViewModel.removeItem)
                 }
                 
                 if !cartViewModel.selectedDiscounts.isEmpty {
@@ -57,7 +69,7 @@ struct CartView: View {
                     Text("Select Discounts")
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.blue)
+                        .background(Color.black)
                         .foregroundColor(.white)
                         .cornerRadius(8)
                 }
@@ -68,48 +80,62 @@ struct CartView: View {
                     Text("Your selected discounts have been applied")
                 }
                 
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("Add Custom Item")
-                        .font(.headline)
+                Button("Add item to cart 🛒") {
+                    showAddItemSet = true
+                }
+                .padding()
+                .frame(maxWidth: .infinity)
+                .background(Color.mint)
+                .foregroundColor(.white)
+                .cornerRadius(8)
+                .sheet(isPresented: $showAddItemSet) {
+                    NavigationView {
+                        Form {
+                            Section(header: Text("Item Details")) {
+                                Text("⌚ Add Item")
+                                    .font(.headline)
 
-                    TextField("Item name", text: $newItemName)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                TextField("Item name", text: $newItemName)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
 
-                    TextField("Price", text: $newItemPrice)
-                        .keyboardType(.decimalPad)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                TextField("Price", text: $newItemPrice)
+                                    .keyboardType(.decimalPad)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
 
-                    Picker("Category", selection: $newItemCategory) {
-                        ForEach(Category.allCases, id: \.self) { category in
-                            Text(category.rawValue.capitalized)
+                                Picker("Category", selection: $newItemCategory) {
+                                    ForEach(Category.allCases, id: \.self) { category in
+                                        Text(category.rawValue.capitalized)
+                                    }
+                                }
+                                .pickerStyle(SegmentedPickerStyle())
+                            }
+                            Button("Add Item") {
+                                if let price = Double(newItemPrice), !newItemName.isEmpty {
+                                    let item = CartItem(name: newItemName, category: newItemCategory, price: price)
+                                    cartViewModel.addItem(item)
+                                    
+                                    // Reset inputs
+                                    newItemName = ""
+                                    newItemPrice = ""
+                                    newItemCategory = .clothing
+                                    
+                                    showAddItemSet = false
+                                }
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.mint)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
                         }
                     }
-                    .pickerStyle(SegmentedPickerStyle())
-
-                    Button("Add Item") {
-                        if let price = Double(newItemPrice), !newItemName.isEmpty {
-
-                            let item = CartItem(name: newItemName, category: newItemCategory, price: price)
-                            cartViewModel.addItem(item)
-                            
-                            // Reset inputs
-                            newItemName = ""
-                            newItemPrice = ""
-                            newItemCategory = .clothing
-                        }
-                    }
-                    .padding(.top, 4)
+                    .navigationTitle("New Item")
+                    .navigationBarTitleDisplayMode(.inline)
                 }
                 .padding()
             }
         }
         .navigationTitle("Cart")
-        
-        // Might use
-        //        .onAppear {
-        //            //            cartViewModel.loadCartFromJSON()
-        //            //            cartViewModel.loadDiscountFromJSON()
-        //        }
     }
     
     //MARK: - Helper label methods
