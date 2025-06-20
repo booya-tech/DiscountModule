@@ -1,4 +1,4 @@
-# 🛍️ DiscountModule – Take-Home Assignment
+# 🧮 DiscountModule
 
 This is a SwiftUI-based application developed as a take-home assignment for **Playtorium**. The app demonstrates a modular discount engine where multiple discount types can be applied to items in a shopping cart.
 
