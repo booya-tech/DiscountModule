@@ -139,8 +139,10 @@ struct DiscountSelectorView: View {
                     }
                     showDiscountAppliedAlert = true
                 }
+                .foregroundStyle(Color.blue)
             }
         }
+        .foregroundStyle(Color("FontColor"))
         .navigationTitle("Discounts")
         .alert("No Discount Selected", isPresented: $showNoSelectionAlert) {
             Button("OK", role: .cancel) {}
@@ -150,7 +152,8 @@ struct DiscountSelectorView: View {
         
         
         Text("Final Price: ฿\(cartViewModel.finalPrice, specifier: "%.2f")")
-            .font(.headline)
+            .font(.title2)
+            .fontWeight(.semibold)
             .foregroundStyle(.green)
             .padding(.top)
         

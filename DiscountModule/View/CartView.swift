@@ -51,7 +51,7 @@ struct CartView: View {
                     }
                     
                     ForEach(cartViewModel.selectedDiscounts.indices, id: \.self) { index in
-                        Text("• \(appliedDiscountLabel(for: cartViewModel.selectedDiscounts[index]))")
+                        Text("\(appliedDiscountLabel(for: cartViewModel.selectedDiscounts[index]))")
                             .font(.subheadline)
                     }
                 }
@@ -66,12 +66,13 @@ struct CartView: View {
                 }
                 .padding()
                 NavigationLink(destination: DiscountSelectorView(cartViewModel: cartViewModel, showDiscountAppliedAlert: $showDiscountAppliedAlert)) {
-                    Text("Select Discounts")
+                    Label("Select Discounts", systemImage: "percent.circle.fill")
+                        .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.black)
+                        .background(Color("ButtonColor"))
                         .foregroundColor(.white)
-                        .cornerRadius(8)
+                        .cornerRadius(10)
                 }
                 .padding(.horizontal)
                 .alert("Discount Applied", isPresented: $showDiscountAppliedAlert) {
@@ -80,35 +81,45 @@ struct CartView: View {
                     Text("Your selected discounts have been applied")
                 }
                 
-                Button("Add item to cart 🛒") {
+                Button {
                     showAddItemSet = true
+                } label: {
+                    Label("Add to Cart", systemImage: "cart.badge.plus")
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .font(.headline)
+                    .background(Color.accentColor)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
                 }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.mint)
-                .foregroundColor(.white)
-                .cornerRadius(8)
                 .sheet(isPresented: $showAddItemSet) {
                     NavigationView {
-                        Form {
-                            Section(header: Text("Item Details")) {
-                                Text("⌚ Add Item")
-                                    .font(.headline)
-
-                                TextField("Item name", text: $newItemName)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-
-                                TextField("Price", text: $newItemPrice)
-                                    .keyboardType(.decimalPad)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-
-                                Picker("Category", selection: $newItemCategory) {
-                                    ForEach(Category.allCases, id: \.self) { category in
-                                        Text(category.rawValue.capitalized)
+                        VStack {
+                            Form {
+                                Section(header: Text("Item Details")) {
+                                    Text("⌚ Add Item")
+                                        .font(.headline)
+                                        .padding(.vertical, 4)
+                                    
+                                    TextField("Item name", text: $newItemName)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                        .padding(.vertical, 4)
+                                    
+                                    TextField("Price", text: $newItemPrice)
+                                        .keyboardType(.decimalPad)
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                        .padding(.vertical, 4)
+                                    
+                                    Picker("Category", selection: $newItemCategory) {
+                                        ForEach(Category.allCases, id: \.self) { category in
+                                            Text(category.rawValue.capitalized)
+                                        }
                                     }
+                                    .pickerStyle(SegmentedPickerStyle())
+                                    .padding(.vertical, 4)
                                 }
-                                .pickerStyle(SegmentedPickerStyle())
                             }
+                            .scrollContentBackground(.hidden)
                             Button("Add Item") {
                                 if let price = Double(newItemPrice), !newItemName.isEmpty {
                                     let item = CartItem(name: newItemName, category: newItemCategory, price: price)
@@ -123,11 +134,13 @@ struct CartView: View {
                                 }
                             }
                             .padding()
+                            .font(.headline)
                             .frame(maxWidth: .infinity)
-                            .background(Color.mint)
+                            .background(.blue)
                             .foregroundColor(.white)
-                            .cornerRadius(8)
+                            .cornerRadius(10)
                         }
+                        .padding()
                     }
                     .navigationTitle("New Item")
                     .navigationBarTitleDisplayMode(.inline)
