@@ -1,6 +1,6 @@
 # 🧮 DiscountModule
 
-This is a SwiftUI-based application developed as a take-home assignment for **Playtorium**. The app demonstrates a modular discount engine where multiple discount types can be applied to items in a shopping cart.
+This is a SwiftUI-based application. The app demonstrates a modular discount engine where multiple discount types can be applied to items in a shopping cart.
 
 ## 📝 Small tips
 The application works more seamlessly on simulator > physical device 
@@ -61,6 +61,6 @@ Two JSON files are included in the bundle:
 - [x] Final price calculated correctly
 - [x] Code structured for clarity and testability
 
-## 🙏🏻 Thank You
+## Thank You
 
 Thank you for reviewing my work. I hope you enjoy testing the DiscountModule app!
